@@ -1,12 +1,18 @@
 const pool = require('../config/database');
 
-const getAllngressos = async (req, res) => {
-    if (!evento) {
-        const resultado = await pool.query('SELECT * FROM ingressos');
-        return resultado.rows;
-    }else {
-        const resultado = await pool.query('SELECT * FROM ingressos WHERE evento ILIKE $1', ['%${evento}%']);
-        return resultado.rows;
+const getAllngressos = async (evento) => {
+    try {
+        if (!evento) {
+            
+            const resultado = await pool.query('SELECT * FROM ingressos');
+            return resultado.rows;
+        }else {
+            const resultado = await pool.query('SELECT * FROM ingressos WHERE evento = $1', [`%${evento}%`]);
+            return resultado.rows;
+        }
+    } catch (error) {
+        console.error('Erro ao buscar ingressos:', error);
+        throw error;
     }
 };
 
@@ -27,7 +33,7 @@ try {
             return { error: 'Preço inválido para categoria pista' };
         }
 
-        const resultado = await pool.query('INSERT INTO ingressos (evento, localizacao, data_evento, categoria, preco, quantidade_disponivel) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [evento, localizacao, data_evento, categoria, preco, quantidade_disponivel]);
+        const resultado = await pool.query('INSERT INTO ingressos (evento, local_evento, data_evento, categoria, preco, quantidade_disponivel) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *', [evento, localizacao, data_evento, categoria, preco, quantidade_disponivel]);
         return resultado.rows[0];
 } catch (error) {
         console.error('Erro ao criar ingresso:', error);
