@@ -3,15 +3,14 @@ const pool = require('../config/database');
 const getAllngressos = async (evento) => {
     try {
         if (!evento) {
-            
-            const resultado = await pool.query('SELECT * FROM ingressos');
+            const resultado = await pool.query('SELECT * FROM ingresso');
             return resultado.rows;
         }else {
-            const resultado = await pool.query('SELECT * FROM ingressos WHERE evento = $1', [`%${evento}%`]);
+            const resultado = await pool.query('SELECT * FROM ingresso WHERE evento ILIKE $1', [`%${evento}%`]);
             return resultado.rows;
         }
     } catch (error) {
-        console.error('Erro ao buscar ingressos:', error);
+        console.error('Erro ao buscar ingresso:', error);
         throw error;
     }
 };
